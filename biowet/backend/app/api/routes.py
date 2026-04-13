@@ -1,7 +1,8 @@
 from datetime import datetime, timezone
+from typing import Literal
 from uuid import uuid4
 
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 
 from app.api.schemas import (
     AdminSummaryOut,
@@ -94,7 +95,15 @@ def validate_observation(
     payload: ValidationIn,
     _: UserRole = Depends(require_roles(UserRole.ADMIN, UserRole.RESEARCHER)),
 ) -> ObservationOut:
-    target = next(item for item in OBSERVATIONS if item["id"] == payload.observation_id)
+    target = next(
+        (item for item in OBSERVATIONS if item["id"] == payload.observation_id),
+        None,
+    )
+    if target is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Observation not found.",
+        )
     action_map = {"approve": "verified", "reject": "flagged", "flag": "flagged"}
     target["status"] = action_map[payload.action]
     return ObservationOut(**target)
@@ -116,7 +125,9 @@ def admin_summary(
 
 @router.get("/pro/reports/download", response_model=ProfessionalReportOut)
 def generate_professional_report(
-    report_type: str = Query(
+    report_type: Literal[
+        "hotspot_monitoring", "habitat_trend", "species_summary"
+    ] = Query(
         default="habitat_trend",
         pattern="^(hotspot_monitoring|habitat_trend|species_summary)$",
     ),
@@ -125,7 +136,7 @@ def generate_professional_report(
     report_id = f"report_{uuid4().hex[:10]}"
     return ProfessionalReportOut(
         report_id=report_id,
-        report_type=report_type,  # type: ignore[arg-type]
+        report_type=report_type,
         download_url=f"https://storage.biowet.local/reports/{report_id}.pdf",
         generated_at=datetime.now(tz=timezone.utc),
     )

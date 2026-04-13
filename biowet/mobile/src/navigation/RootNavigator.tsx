@@ -53,7 +53,8 @@ function MainTabs({
             Explore: "leaf-outline",
             Profile: "person-outline",
           };
-          return <Ionicons name={iconMap[route.name]} size={size} color={color} />;
+          const routeName = route.name as keyof TabParamList;
+          return <Ionicons name={iconMap[routeName]} size={size} color={color} />;
         },
       })}
     >
