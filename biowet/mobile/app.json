@@ -1,0 +1,24 @@
+{
+  "expo": {
+    "name": "BioWet",
+    "slug": "biowet",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "org.biowet.mobile"
+    },
+    "android": {
+      "package": "org.biowet.mobile",
+      "permissions": [
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION",
+        "CAMERA",
+        "POST_NOTIFICATIONS"
+      ]
+    },
+    "plugins": ["expo-image-picker", "expo-location", "expo-notifications"]
+  }
+}
