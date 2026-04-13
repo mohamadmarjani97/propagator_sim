@@ -137,3 +137,11 @@ work/
 
 output/
 example/*.xml
+
+# BioWet mobile artifacts
+biowet/mobile/node_modules/
+biowet/mobile/.expo/
+biowet/mobile/dist/
+
+# BioWet backend local virtual environments
+biowet/backend/.venv/
